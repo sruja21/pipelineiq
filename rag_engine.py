@@ -144,7 +144,7 @@ class EmbeddingEngine:
         return self.model.encode(texts, normalize_embeddings=True).tolist()
 
 
-# ── Vector Store ──────────────────────────────────────────────────────────────
+
 
 class VectorStore:
     """

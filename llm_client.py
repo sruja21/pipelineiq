@@ -27,7 +27,7 @@ class OllamaClient:
         except Exception:
             return []
 
-    # ── Generate
+
     def stream(self, prompt: str, system: str = "", temperature: float = 0.2) -> Iterator[str]:
         """
         Stream tokens from Ollama one chunk at a time.
@@ -55,7 +55,7 @@ class OllamaClient:
         """Blocking generate — returns full response string."""
         return "".join(self.stream(prompt, system, temperature))
 
-    # ── Chat
+
 
     def chat_stream(self, messages: list, system: str = "", temperature: float = 0.3) -> Iterator[str]:
         """

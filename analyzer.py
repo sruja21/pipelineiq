@@ -50,7 +50,7 @@ class PipelineAnalyzer:
         self.chunker = LogChunker()
         print(f"[PipelineIQ] Ready. Model: {model} | Knowledge base: {self.rag.store.count()} entries")
 
-    # ── Main analysis ─────────────────────────────────────────────────────────
+
 
     def analyze(self, log_text: str, pipeline_type: str = "github-actions") -> dict:
         """
@@ -104,7 +104,7 @@ class PipelineAnalyzer:
 
         yield from self.llm.stream(prompt, ANALYSIS_SYSTEM, temperature=0.1)
 
-    # ── Follow-up chat ────────────────────────────────────────────────────────
+
 
     def chat(self, message: str, history: list, log_context: str = "", pipeline_type: str = "") -> Iterator[str]:
         """
@@ -118,7 +118,7 @@ class PipelineAnalyzer:
         messages = history + [{"role": "user", "content": message}]
         yield from self.llm.chat_stream(messages, system)
 
-    # ── Resolution recording ──────────────────────────────────────────────────
+
 
     def record_fix(self, log_text: str, pipeline_type: str, resolution: dict) -> str:
         """
@@ -145,7 +145,7 @@ class PipelineAnalyzer:
             "available_models":       self.llm.list_models(),
         }
 
-    # ── Prompt builder ────────────────────────────────────────────────────────
+
 
     def _build_prompt(self, error_ctx: str, pipeline_type: str, similar: list) -> str:
         rag_block = ""

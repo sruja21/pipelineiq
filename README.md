@@ -11,19 +11,15 @@
 Paste / pipe a failure log
          ↓
    Log Chunker
-   (split by stage, extract error context)
          ↓
    Sentence Transformers
-   (local embeddings, ~80MB, no API)
          ↓
    ChromaDB  ←──────────────────────────────────────┐
-   (persistent local vector store)                  │
+                  │
          ↓                                           │
    RAG Retrieval                              record_fix()
-   (find similar past failures)              teaches the system
          ↓
    Ollama (llama3 / mistral / codellama)
-   (local LLM, no API key)
          ↓
    Root Cause + Fix + Confidence + Chat
 ```
@@ -39,9 +35,6 @@ brew install ollama
 
 # Linux
 curl -fsSL https://ollama.com/install.sh | sh
-
-# Windows
-# Download from https://ollama.com/download
 ```
 
 ### 2. Pull a model
@@ -129,56 +122,6 @@ python cli.py --stats
 ```
 
 ---
-
-## REST API (Optional)
-
-If you want to integrate PipelineIQ into Slack, dashboards, or CI/CD pipelines:
-
-```bash
-uvicorn server:app --host 0.0.0.0 --port 8000
-```
-
-### Analyze a log
-```bash
-curl -X POST http://localhost:8000/analyze \
-  -H "Content-Type: application/json" \
-  -d '{
-    "log_text": "npm error ERESOLVE unable to resolve...",
-    "pipeline_type": "github-actions"
-  }'
-```
-
-### Streaming analysis
-```bash
-curl -X POST http://localhost:8000/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"log_text": "...", "pipeline_type": "github-actions", "stream": true}'
-```
-
-### Follow-up chat
-```bash
-curl -X POST http://localhost:8000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "How do I prevent this?", "log_context": "..."}'
-```
-
-### Teach a resolution
-```bash
-curl -X POST http://localhost:8000/teach \
-  -H "Content-Type: application/json" \
-  -d '{
-    "log_text": "...",
-    "pipeline_type": "github-actions",
-    "root_cause": "React 18 peer dep conflict",
-    "error_type": "DependencyConflict",
-    "fix_applied": "Added --legacy-peer-deps",
-    "fix_commands": ["npm ci --legacy-peer-deps"],
-    "tags": ["npm", "peer-deps"]
-  }'
-```
-
----
-
 ## GitHub Actions Auto-Analysis
 
 Add this to your workflow to auto-analyze failures:
@@ -214,26 +157,3 @@ pipelineiq/
 ├── requirements.txt
 └── chroma_db/       ← Auto-created: persistent vector store
 ```
-
----
-
-## Supported Pipeline Types
-
-| Type | Flag |
-|---|---|
-| GitHub Actions | `github-actions` |
-| Jenkins | `jenkins` |
-| GitLab CI | `gitlab` |
-| Terraform | `terraform` |
-| Docker Build | `docker` |
-| Any other log | `custom` |
-
-## Supported Ollama Models
-
-| Model | Best For |
-|---|---|
-| `llama3` | Best overall, recommended |
-| `mistral` | Faster responses |
-| `codellama` | Code-heavy errors |
-| `deepseek-coder` | Alternative code model |
-| `phi3` | Very fast, lower RAM |

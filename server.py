@@ -11,7 +11,7 @@ app      = FastAPI(title="PipelineIQ API", version="1.0.0")
 analyzer = PipelineAnalyzer()   # Singleton — shared across requests
 
 
-# ── Request models ────────────────────────────────────────────────────────────
+
 
 class AnalyzeRequest(BaseModel):
     log_text:      str
